@@ -66,3 +66,8 @@ int pawn_rules(move m, p pieces[])
     }
     else return 0;
 }
+
+int visible_to_pawn(p pieces[], p pawn, int target_x, int target_y)
+{
+    int dx = pawn.x - target_x, dy = pawn.y - target_y;
+}

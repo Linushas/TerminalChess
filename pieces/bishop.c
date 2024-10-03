@@ -85,10 +85,10 @@ int visible_to_bishop(p pieces[], p bishop, int target_x, int target_y)
                 x = bishop.x - i;   
                 y = bishop.y + i;
             }
-            if(board[x][y] != EMPTY_COORDINATE)
-                break;
+            if(board[x][y] != EMPTY_COORDINATE){
+                break;}
         }
-        if(x == target_y && y == target_y)
+        if(x == target_x && y == target_y)
             return 1;
         else
             return 0;

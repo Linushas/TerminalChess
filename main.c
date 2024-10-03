@@ -16,7 +16,7 @@ int main()
     while(!game_over)
     {
         print_chessboard(pieces);
-        if(visible_to_bishop(pieces, pieces[WBISHOP1], pieces[BKING].x, pieces[BKING].y) == 1)
+        if(visible_to_pawn(pieces, pieces[WPAWN4], pieces[BKING].x, pieces[BKING].y) == 1)
             printf("visible!\n");
         printf("%s's turn! Enter move: ", nextPlayer ? "White" : "Black");
         while(1)
