@@ -16,10 +16,6 @@ int main()
     while(!game_over)
     {
         print_chessboard(pieces);
-        if(in_check(pieces) == BLACK_IN_CHECK)
-            printf("Black is in check!\n");
-        if(in_check(pieces) == WHITE_IN_CHECK)
-            printf("White is in check!\n");
         printf("%s's turn! Enter move: ", nextPlayer ? "White" : "Black");
         while(1)
         {

@@ -17,7 +17,10 @@ int pawn_rules(move m, p pieces[])
         if(deltaX == 1 && deltaY == 1)
         {
             if(board[m.dest_x][m.dest_y] != EMPTY_COORDINATE)
+            {
+                if(m.dest_y == 7) pieces[m.piece].state = PROMOTED;
                 return 1;
+            }
             else return 0;
         }
         else return 0;
@@ -27,7 +30,10 @@ int pawn_rules(move m, p pieces[])
         if(deltaX == 1 && deltaY == 1)
         {
             if(board[m.dest_x][m.dest_y] != EMPTY_COORDINATE)
+            {
+                if(m.dest_y == 0) pieces[m.piece].state = PROMOTED;
                 return 1;
+            }
             else return 0;
         }
         else return 0;

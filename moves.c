@@ -24,66 +24,73 @@ int executeMove(move m, p pieces[], bool nextPlayer)
             captured_coordinate = board[m.dest_x][m.dest_y];
         }
 
+        p temp_pieces[NR_OF_PIECES];
+        int i;
+        for(i = 0; i < NR_OF_PIECES; i++)
+        {
+            temp_pieces[i] = pieces[i];
+        }
+
         switch(m.piece)
         {
             case BPAWN1: case BPAWN2: case BPAWN3: case BPAWN4: case BPAWN5: case BPAWN6: case BPAWN7: case BPAWN8:
             case WPAWN1: case WPAWN2: case WPAWN3: case WPAWN4: case WPAWN5: case WPAWN6: case WPAWN7: case WPAWN8:
-                if(pieces[m.piece].state == PROMOTED)
+                if(temp_pieces[m.piece].state == PROMOTED)
                 {
-                    if(queen_rules(m, pieces) == 1)
+                    if(queen_rules(m, temp_pieces) == 1)
                     {
-                        pieces[m.piece].x = m.dest_x;
-                        pieces[m.piece].y = m.dest_y;
+                        temp_pieces[m.piece].x = m.dest_x;
+                        temp_pieces[m.piece].y = m.dest_y;
                     }
                     else return 0;
                 }
                 else
                 {
-                    if(pawn_rules(m, pieces) == 1)
+                    if(pawn_rules(m, temp_pieces) == 1)
                     {
-                        pieces[m.piece].x = m.dest_x;
-                        pieces[m.piece].y = m.dest_y;
+                        temp_pieces[m.piece].x = m.dest_x;
+                        temp_pieces[m.piece].y = m.dest_y;
                     }
                     else return 0;
                 }
                 break;
             case BROOK1: case BROOK2: case WROOK1: case WROOK2:
-                if(rook_rules(m, pieces) == 1)
+                if(rook_rules(m, temp_pieces) == 1)
                 {
-                    pieces[m.piece].x = m.dest_x;
-                    pieces[m.piece].y = m.dest_y;
+                    temp_pieces[m.piece].x = m.dest_x;
+                    temp_pieces[m.piece].y = m.dest_y;
                 }
                 else return 0;
                 break;
             case BBISHOP1: case BBISHOP2: case WBISHOP1: case WBISHOP2:
-                if(bishop_rules(m, pieces) == 1)
+                if(bishop_rules(m, temp_pieces) == 1)
                 {
-                    pieces[m.piece].x = m.dest_x;
-                    pieces[m.piece].y = m.dest_y;
+                    temp_pieces[m.piece].x = m.dest_x;
+                    temp_pieces[m.piece].y = m.dest_y;
                 }
                 else return 0;
                 break;
             case BKNIGHT1: case BKNIGHT2: case WKNIGHT1: case WKNIGHT2:
                 if(knight_rules(m) == 1)
                 {
-                    pieces[m.piece].x = m.dest_x;
-                    pieces[m.piece].y = m.dest_y;
+                    temp_pieces[m.piece].x = m.dest_x;
+                    temp_pieces[m.piece].y = m.dest_y;
                 }
                 else return 0;
                 break;
             case BKING: case WKING:
-                if(king_rules(m, pieces) == 1)
+                if(king_rules(m, temp_pieces) == 1)
                 {
-                    pieces[m.piece].x = m.dest_x;
-                    pieces[m.piece].y = m.dest_y;
+                    temp_pieces[m.piece].x = m.dest_x;
+                    temp_pieces[m.piece].y = m.dest_y;
                 }
                 else return 0;
                 break;
             case BQUEEN: case WQUEEN:
-                if(queen_rules(m, pieces) == 1)
+                if(queen_rules(m, temp_pieces) == 1)
                 {
-                    pieces[m.piece].x = m.dest_x;
-                    pieces[m.piece].y = m.dest_y;
+                    temp_pieces[m.piece].x = m.dest_x;
+                    temp_pieces[m.piece].y = m.dest_y;
                 }
                 else return 0;
                 break;
@@ -96,7 +103,25 @@ int executeMove(move m, p pieces[], bool nextPlayer)
 
         if(captured_coordinate != EMPTY_COORDINATE)
         {
-            pieces[captured_coordinate].state = CAPTURED;
+            temp_pieces[captured_coordinate].state = CAPTURED;
+        }
+
+        if(in_check(temp_pieces) == BLACK_IN_CHECK && m.piece < 16)
+        {
+            printf("You're in check!\n");
+            return 0;
+        }
+        else if(in_check(temp_pieces) == WHITE_IN_CHECK && m.piece >= 16)
+        {
+            printf("You're in check!\n");
+            return 0;
+        }
+        else
+        {
+            for(i = 0; i < NR_OF_PIECES; i++)
+            {
+                pieces[i] = temp_pieces[i];
+            }
         }
     }
     else if(m.move_type == KINGCASTLE || m.move_type == QUEENCASTLE)
@@ -107,6 +132,18 @@ int executeMove(move m, p pieces[], bool nextPlayer)
 
 int in_check(p pieces[])
 {
+    int i;
+    for(i = 0; i < NR_OF_PIECES; i++)
+    {
+        if(pieces[i].state == PROMOTED)
+        {
+            if(visible_to_queen(pieces, pieces[i], pieces[BKING].x, pieces[BKING].y) == 1 && pieces[i].state != CAPTURED && i >= 16)
+                return BLACK_IN_CHECK;
+            if(visible_to_queen(pieces, pieces[i], pieces[WKING].x, pieces[WKING].y) == 1 && pieces[i].state != CAPTURED && i < 16)
+                return WHITE_IN_CHECK;
+        }
+    }
+
     //Black king
     if(visible_to_bishop(pieces, pieces[WBISHOP1], pieces[BKING].x, pieces[BKING].y) == 1 && pieces[WBISHOP1].state != CAPTURED)
         return BLACK_IN_CHECK;
@@ -126,57 +163,57 @@ int in_check(p pieces[])
     else if(visible_to_queen(pieces, pieces[WQUEEN], pieces[BKING].x, pieces[BKING].y) == 1 && pieces[WQUEEN].state != CAPTURED)
         return BLACK_IN_CHECK;
     
-    else if(visible_to_pawn(pieces, pieces[WPAWN1], pieces[BKING].x, pieces[BKING].y) == 1)
+    else if(visible_to_pawn(pieces, pieces[WPAWN1], pieces[BKING].x, pieces[BKING].y) == 1 && pieces[WPAWN1].state != CAPTURED)
         return BLACK_IN_CHECK;
-    else if(visible_to_pawn(pieces, pieces[WPAWN2], pieces[BKING].x, pieces[BKING].y) == 1)
+    else if(visible_to_pawn(pieces, pieces[WPAWN2], pieces[BKING].x, pieces[BKING].y) == 1 && pieces[WPAWN2].state != CAPTURED)
         return BLACK_IN_CHECK;
-    else if(visible_to_pawn(pieces, pieces[WPAWN3], pieces[BKING].x, pieces[BKING].y) == 1)
+    else if(visible_to_pawn(pieces, pieces[WPAWN3], pieces[BKING].x, pieces[BKING].y) == 1 && pieces[WPAWN3].state != CAPTURED) 
         return BLACK_IN_CHECK;
-    else if(visible_to_pawn(pieces, pieces[WPAWN4], pieces[BKING].x, pieces[BKING].y) == 1)
+    else if(visible_to_pawn(pieces, pieces[WPAWN4], pieces[BKING].x, pieces[BKING].y) == 1 && pieces[WPAWN4].state != CAPTURED)
         return BLACK_IN_CHECK;
-    else if(visible_to_pawn(pieces, pieces[WPAWN5], pieces[BKING].x, pieces[BKING].y) == 1)
+    else if(visible_to_pawn(pieces, pieces[WPAWN5], pieces[BKING].x, pieces[BKING].y) == 1 && pieces[WPAWN5].state != CAPTURED)
         return BLACK_IN_CHECK;
-    else if(visible_to_pawn(pieces, pieces[WPAWN6], pieces[BKING].x, pieces[BKING].y) == 1)
+    else if(visible_to_pawn(pieces, pieces[WPAWN6], pieces[BKING].x, pieces[BKING].y) == 1 && pieces[WPAWN6].state != CAPTURED)
         return BLACK_IN_CHECK;
-    else if(visible_to_pawn(pieces, pieces[WPAWN7], pieces[BKING].x, pieces[BKING].y) == 1)
+    else if(visible_to_pawn(pieces, pieces[WPAWN7], pieces[BKING].x, pieces[BKING].y) == 1 && pieces[WPAWN7].state != CAPTURED)
         return BLACK_IN_CHECK;
-    else if(visible_to_pawn(pieces, pieces[WPAWN8], pieces[BKING].x, pieces[BKING].y) == 1)
+    else if(visible_to_pawn(pieces, pieces[WPAWN8], pieces[BKING].x, pieces[BKING].y) == 1 && pieces[WPAWN8].state != CAPTURED)
         return BLACK_IN_CHECK;
 
     //White king
-    if(visible_to_bishop(pieces, pieces[BBISHOP1], pieces[WKING].x, pieces[WKING].y) == 1)
+    if(visible_to_bishop(pieces, pieces[BBISHOP1], pieces[WKING].x, pieces[WKING].y) == 1 && pieces[BBISHOP1].state != CAPTURED)
         return WHITE_IN_CHECK;
-    else if(visible_to_bishop(pieces, pieces[BBISHOP2], pieces[WKING].x, pieces[WKING].y) == 1)
+    else if(visible_to_bishop(pieces, pieces[BBISHOP2], pieces[WKING].x, pieces[WKING].y) == 1 && pieces[BBISHOP2].state != CAPTURED)
         return WHITE_IN_CHECK;
     
-    else if(visible_to_rook(pieces, pieces[BROOK1], pieces[WKING].x, pieces[WKING].y) == 1)
+    else if(visible_to_rook(pieces, pieces[BROOK1], pieces[WKING].x, pieces[WKING].y) == 1 && pieces[BROOK1].state != CAPTURED)
         return WHITE_IN_CHECK;
-    else if(visible_to_rook(pieces, pieces[BROOK2], pieces[WKING].x, pieces[WKING].y) == 1)
+    else if(visible_to_rook(pieces, pieces[BROOK2], pieces[WKING].x, pieces[WKING].y) == 1 && pieces[BROOK2].state != CAPTURED)
         return WHITE_IN_CHECK;
 
-    else if(visible_to_knight(pieces, pieces[BKNIGHT1], pieces[WKING].x, pieces[WKING].y) == 1)
+    else if(visible_to_knight(pieces, pieces[BKNIGHT1], pieces[WKING].x, pieces[WKING].y) == 1 && pieces[BKNIGHT1].state != CAPTURED)
         return WHITE_IN_CHECK;
-    else if(visible_to_knight(pieces, pieces[BKNIGHT2], pieces[WKING].x, pieces[WKING].y) == 1)
-        return WHITE_IN_CHECK;
-    
-    else if(visible_to_queen(pieces, pieces[BQUEEN], pieces[WKING].x, pieces[WKING].y) == 1)
+    else if(visible_to_knight(pieces, pieces[BKNIGHT2], pieces[WKING].x, pieces[WKING].y) == 1 && pieces[BKNIGHT2].state != CAPTURED)
         return WHITE_IN_CHECK;
     
-    else if(visible_to_pawn(pieces, pieces[BPAWN1], pieces[WKING].x, pieces[WKING].y) == 1)
+    else if(visible_to_queen(pieces, pieces[BQUEEN], pieces[WKING].x, pieces[WKING].y) == 1 && pieces[BQUEEN].state != CAPTURED)
         return WHITE_IN_CHECK;
-    else if(visible_to_pawn(pieces, pieces[BPAWN2], pieces[WKING].x, pieces[WKING].y) == 1)
+    
+    else if(visible_to_pawn(pieces, pieces[BPAWN1], pieces[WKING].x, pieces[WKING].y) == 1 && pieces[BPAWN1].state != CAPTURED)
+        return WHITE_IN_CHECK;
+    else if(visible_to_pawn(pieces, pieces[BPAWN2], pieces[WKING].x, pieces[WKING].y) == 1 && pieces[BPAWN2].state != CAPTURED)
         return BLACK_IN_CHECK;
-    else if(visible_to_pawn(pieces, pieces[BPAWN3], pieces[WKING].x, pieces[WKING].y) == 1)
+    else if(visible_to_pawn(pieces, pieces[BPAWN3], pieces[WKING].x, pieces[WKING].y) == 1 && pieces[BPAWN3].state != CAPTURED)
         return WHITE_IN_CHECK;
-    else if(visible_to_pawn(pieces, pieces[BPAWN4], pieces[WKING].x, pieces[WKING].y) == 1)
+    else if(visible_to_pawn(pieces, pieces[BPAWN4], pieces[WKING].x, pieces[WKING].y) == 1 && pieces[BPAWN4].state != CAPTURED)
         return WHITE_IN_CHECK;
-    else if(visible_to_pawn(pieces, pieces[BPAWN5], pieces[WKING].x, pieces[WKING].y) == 1)
+    else if(visible_to_pawn(pieces, pieces[BPAWN5], pieces[WKING].x, pieces[WKING].y) == 1 && pieces[BPAWN5].state != CAPTURED)
         return WHITE_IN_CHECK;
-    else if(visible_to_pawn(pieces, pieces[BPAWN6], pieces[WKING].x, pieces[WKING].y) == 1)
+    else if(visible_to_pawn(pieces, pieces[BPAWN6], pieces[WKING].x, pieces[WKING].y) == 1 && pieces[BPAWN6].state != CAPTURED)
         return WHITE_IN_CHECK;
-    else if(visible_to_pawn(pieces, pieces[BPAWN7], pieces[WKING].x, pieces[WKING].y) == 1)
+    else if(visible_to_pawn(pieces, pieces[BPAWN7], pieces[WKING].x, pieces[WKING].y) == 1 && pieces[BPAWN7].state != CAPTURED)
         return WHITE_IN_CHECK;
-    else if(visible_to_pawn(pieces, pieces[BPAWN8], pieces[WKING].x, pieces[WKING].y) == 1)
+    else if(visible_to_pawn(pieces, pieces[BPAWN8], pieces[WKING].x, pieces[WKING].y) == 1 && pieces[BPAWN8].state != CAPTURED)
         return WHITE_IN_CHECK;
     
     else return NOT_IN_CHECK;
