@@ -14,6 +14,8 @@ enum piece_state{CAPTURED, PROMOTED, ACTIVE};
 
 enum movetype{DEFAULT, KINGCASTLE, QUEENCASTLE};
 
+enum check{NOT_IN_CHECK, BLACK_IN_CHECK, WHITE_IN_CHECK};
+
 enum directions{NONE, UP, DOWN, LEFT, RIGHT, UPLEFT, UPRIGHT, DOWNLEFT, DOWNRIGHT, KNIGHT};
 
 typedef struct{

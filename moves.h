@@ -6,7 +6,7 @@
 
 int executeMove(move m, p pieces[], bool nextPlayer);
 
-int in_check(bool nextPlayer, p pieces[]);
+int in_check(p pieces[]);
 
 void castle();
 

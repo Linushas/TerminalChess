@@ -105,9 +105,81 @@ int executeMove(move m, p pieces[], bool nextPlayer)
     return 1;
 }
 
-int in_check(bool nextPlayer, p pieces[])
+int in_check(p pieces[])
 {
+    //Black king
+    if(visible_to_bishop(pieces, pieces[WBISHOP1], pieces[BKING].x, pieces[BKING].y) == 1 && pieces[WBISHOP1].state != CAPTURED)
+        return BLACK_IN_CHECK;
+    else if(visible_to_bishop(pieces, pieces[WBISHOP2], pieces[BKING].x, pieces[BKING].y) == 1 && pieces[WBISHOP2].state != CAPTURED)
+        return BLACK_IN_CHECK;
+    
+    else if(visible_to_rook(pieces, pieces[WROOK1], pieces[BKING].x, pieces[BKING].y) == 1 && pieces[WROOK2].state != CAPTURED)
+        return BLACK_IN_CHECK;
+    else if(visible_to_rook(pieces, pieces[WROOK2], pieces[BKING].x, pieces[BKING].y) == 1 && pieces[WROOK2].state != CAPTURED)
+        return BLACK_IN_CHECK;
 
+    else if(visible_to_knight(pieces, pieces[WKNIGHT1], pieces[BKING].x, pieces[BKING].y) == 1 && pieces[WKNIGHT2].state != CAPTURED)
+        return BLACK_IN_CHECK;
+    else if(visible_to_knight(pieces, pieces[WKNIGHT2], pieces[BKING].x, pieces[BKING].y) == 1 && pieces[WKNIGHT2].state != CAPTURED)
+        return BLACK_IN_CHECK;
+    
+    else if(visible_to_queen(pieces, pieces[WQUEEN], pieces[BKING].x, pieces[BKING].y) == 1 && pieces[WQUEEN].state != CAPTURED)
+        return BLACK_IN_CHECK;
+    
+    else if(visible_to_pawn(pieces, pieces[WPAWN1], pieces[BKING].x, pieces[BKING].y) == 1)
+        return BLACK_IN_CHECK;
+    else if(visible_to_pawn(pieces, pieces[WPAWN2], pieces[BKING].x, pieces[BKING].y) == 1)
+        return BLACK_IN_CHECK;
+    else if(visible_to_pawn(pieces, pieces[WPAWN3], pieces[BKING].x, pieces[BKING].y) == 1)
+        return BLACK_IN_CHECK;
+    else if(visible_to_pawn(pieces, pieces[WPAWN4], pieces[BKING].x, pieces[BKING].y) == 1)
+        return BLACK_IN_CHECK;
+    else if(visible_to_pawn(pieces, pieces[WPAWN5], pieces[BKING].x, pieces[BKING].y) == 1)
+        return BLACK_IN_CHECK;
+    else if(visible_to_pawn(pieces, pieces[WPAWN6], pieces[BKING].x, pieces[BKING].y) == 1)
+        return BLACK_IN_CHECK;
+    else if(visible_to_pawn(pieces, pieces[WPAWN7], pieces[BKING].x, pieces[BKING].y) == 1)
+        return BLACK_IN_CHECK;
+    else if(visible_to_pawn(pieces, pieces[WPAWN8], pieces[BKING].x, pieces[BKING].y) == 1)
+        return BLACK_IN_CHECK;
+
+    //White king
+    if(visible_to_bishop(pieces, pieces[BBISHOP1], pieces[WKING].x, pieces[WKING].y) == 1)
+        return WHITE_IN_CHECK;
+    else if(visible_to_bishop(pieces, pieces[BBISHOP2], pieces[WKING].x, pieces[WKING].y) == 1)
+        return WHITE_IN_CHECK;
+    
+    else if(visible_to_rook(pieces, pieces[BROOK1], pieces[WKING].x, pieces[WKING].y) == 1)
+        return WHITE_IN_CHECK;
+    else if(visible_to_rook(pieces, pieces[BROOK2], pieces[WKING].x, pieces[WKING].y) == 1)
+        return WHITE_IN_CHECK;
+
+    else if(visible_to_knight(pieces, pieces[BKNIGHT1], pieces[WKING].x, pieces[WKING].y) == 1)
+        return WHITE_IN_CHECK;
+    else if(visible_to_knight(pieces, pieces[BKNIGHT2], pieces[WKING].x, pieces[WKING].y) == 1)
+        return WHITE_IN_CHECK;
+    
+    else if(visible_to_queen(pieces, pieces[BQUEEN], pieces[WKING].x, pieces[WKING].y) == 1)
+        return WHITE_IN_CHECK;
+    
+    else if(visible_to_pawn(pieces, pieces[BPAWN1], pieces[WKING].x, pieces[WKING].y) == 1)
+        return WHITE_IN_CHECK;
+    else if(visible_to_pawn(pieces, pieces[BPAWN2], pieces[WKING].x, pieces[WKING].y) == 1)
+        return BLACK_IN_CHECK;
+    else if(visible_to_pawn(pieces, pieces[BPAWN3], pieces[WKING].x, pieces[WKING].y) == 1)
+        return WHITE_IN_CHECK;
+    else if(visible_to_pawn(pieces, pieces[BPAWN4], pieces[WKING].x, pieces[WKING].y) == 1)
+        return WHITE_IN_CHECK;
+    else if(visible_to_pawn(pieces, pieces[BPAWN5], pieces[WKING].x, pieces[WKING].y) == 1)
+        return WHITE_IN_CHECK;
+    else if(visible_to_pawn(pieces, pieces[BPAWN6], pieces[WKING].x, pieces[WKING].y) == 1)
+        return WHITE_IN_CHECK;
+    else if(visible_to_pawn(pieces, pieces[BPAWN7], pieces[WKING].x, pieces[WKING].y) == 1)
+        return WHITE_IN_CHECK;
+    else if(visible_to_pawn(pieces, pieces[BPAWN8], pieces[WKING].x, pieces[WKING].y) == 1)
+        return WHITE_IN_CHECK;
+    
+    else return NOT_IN_CHECK;
 }
 
 void castle()
