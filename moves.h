@@ -14,6 +14,6 @@ int charInputToIndex(char ch);
 
 int getPiece(p pieces[], int x_pos, int y_pos);
 
-move getMove(p pieces[]);
+move getMove(p pieces[], bool nextPlayer);
 
 #endif

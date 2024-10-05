@@ -108,12 +108,10 @@ int executeMove(move m, p pieces[], bool nextPlayer)
 
         if(in_check(temp_pieces) == BLACK_IN_CHECK && m.piece < 16)
         {
-            printf("You're in check!\n");
             return 0;
         }
         else if(in_check(temp_pieces) == WHITE_IN_CHECK && m.piece >= 16)
         {
-            printf("You're in check!\n");
             return 0;
         }
         else
@@ -252,7 +250,7 @@ int getPiece(p pieces[], int x_pos, int y_pos)
     return 404;
 }
 
-move getMove(p pieces[])
+move getMove(p pieces[], bool nextPlayer)
 {
     move m;
     char input[6];
@@ -276,7 +274,9 @@ move getMove(p pieces[])
             m.piece = getPiece(pieces, m.start_x, m.start_y);
             if(m.piece == 404)
             {
-                printf("No piece located at %c%c! Try again: ", input[0], input[1]); 
+                //printf("No piece located at %c%c! Try again: ", input[0], input[1]); 
+                print_chessboard_v2(pieces, true, nextPlayer);
+                printf("                           *   > ");
                 continue;
             }
 
@@ -301,13 +301,19 @@ move getMove(p pieces[])
                 else if((m.start_x - m.dest_x) > 0 && (m.start_y - m.dest_y) > 0)
                     m.direction = UPLEFT;
                 else
-                    {printf("Illegal move!"); continue;}
+                {
+                    print_chessboard_v2(pieces, true, nextPlayer);
+                    printf("                           *   > ");
+                }
             }
             else if( (abs(m.start_x - m.dest_x) == 1 && abs(m.start_y - m.dest_y) == 2) ||
                      (abs(m.start_x - m.dest_x) == 2 && abs(m.start_y - m.dest_y) == 1))
                 m.direction = KNIGHT;
             else
-                {printf("Illegal move! Try again: "); continue;}
+            {
+                print_chessboard_v2(pieces, true, nextPlayer);
+                printf("                           *   > ");
+            }
         }
         break;
     }

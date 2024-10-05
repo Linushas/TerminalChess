@@ -15,11 +15,12 @@ int main()
     bool game_over = false;
     while(!game_over)
     {
-        print_chessboard(pieces);
-        printf("%s's turn! Enter move: ", nextPlayer ? "White" : "Black");
+        //print_chessboard(pieces);
+        print_chessboard_v2(pieces, false, nextPlayer);
+        printf("                           *   > ");
         while(1)
         {
-            move m = getMove(pieces);
+            move m = getMove(pieces, nextPlayer);
             int n = executeMove(m, pieces, nextPlayer);
             if(n == 1)
                 break;
@@ -27,7 +28,11 @@ int main()
                 game_over = true;
                 break;
             }
-            else printf("Illegal move! Try again: ");
+            else 
+            {
+                print_chessboard_v2(pieces, true, nextPlayer);
+                printf("                           *   > ");
+            }
         }
         nextPlayer = nextPlayer ? BLACK : WHITE;
     }

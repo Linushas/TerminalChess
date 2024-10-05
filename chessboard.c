@@ -1,6 +1,7 @@
 #include "definitions.h"
 #include "chessboard.h"
 #include <stdio.h>
+#include <stdbool.h>
 
 void getBoard(p pieces[], int board[BOARD_SIZE][BOARD_SIZE])
 {
@@ -106,6 +107,54 @@ void print_chessboard(p pieces[])
         i++;
     }
     printf("\n");
+}
+
+void print_chessboard_v2(p pieces[], bool is_illegal_move, bool nextPlayer)
+{
+    int x, y, i = 0, board[BOARD_SIZE][BOARD_SIZE];
+    getBoard(pieces, board);
+
+    printf("\n");
+    printf("\n");
+    printf("   a  b  c  d  e  f  g  h  * * * * * * * * * * * * * * * *\n");
+    for(y = 0; y < BOARD_SIZE; y++)
+    {   
+        
+        printf("%d ", BOARD_SIZE - y);
+        for(x = 0; x < BOARD_SIZE; x++)
+        {
+            if((i % 2 == 0) && (board[x][y] < 16)) 
+                printf(COLOR_WHITE2_BG_BLACK" "COLOR_BLUE_BG_BLACK"%c"COLOR_RESET""COLOR_WHITE2_BG_BLACK" "COLOR_RESET, getPieceChar(board[x][y], pieces));
+            else if((i % 2 != 0) && (board[x][y] < 16))
+                printf(COLOR_WHITE2_BG_WHITE" "COLOR_BLUE_BG_WHITE"%c"COLOR_RESET""COLOR_WHITE2_BG_WHITE" "COLOR_RESET, getPieceChar(board[x][y], pieces));
+            if((i % 2 == 0) && (board[x][y] >= 16)) 
+                printf(COLOR_WHITE_BG_BLACK" %c "COLOR_RESET, getPieceChar(board[x][y], pieces));
+            else if((i % 2 != 0) && (board[x][y] >= 16))
+                printf(COLOR_WHITE_BG_WHITE" %c "COLOR_RESET, getPieceChar(board[x][y], pieces));
+            i++;
+        }
+        printf(" *");
+        if(y == 0)
+        {
+            printf("   ");
+            for(i = 0; i < NR_OF_PIECES; i++)
+            {
+                if(i < 16 && pieces[i].state == CAPTURED)
+                    printf(COLOR_BLUE_BG_WHITE"%c "COLOR_RESET, getPieceChar(i, pieces));
+                else if(i >= 16 && pieces[i].state == CAPTURED)
+                    printf(COLOR_WHITE_BG_WHITE"%c "COLOR_RESET, getPieceChar(i, pieces));
+            }
+            int balance = calculatePiecePoints(pieces);
+            if(balance != 0) printf("  %d", balance);
+        }
+        
+        if(y == 6) printf("   ___________________________");
+        if(y == 7 && is_illegal_move) printf("   "COLOR_RED"Illegal move! Try again: "COLOR_RESET);
+        else if(y == 7) printf("   %s's turn! Enter move: ", nextPlayer ? "White" : "Black");
+        printf("\n");
+        i++;
+    }
+    
 }
 
 char getPieceChar(int i, p pieces[])
