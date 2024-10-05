@@ -10,3 +10,10 @@ Ex) *e2e4* moves the piece located at *e2* to *e4*.
 
 ## Preview:
 ![preview](./Images/preview.png)
+
+## To do:
+- Game over scenarios (checkmate, stalemate and draw)
+- Castling
+- En passant
+- Move-highlighting
+- Chessengine (minimax algorithm)

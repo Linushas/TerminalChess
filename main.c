@@ -28,7 +28,7 @@ int main()
                 game_over = true;
                 break;
             }
-            else 
+            else
             {
                 print_chessboard_v2(pieces, true, nextPlayer);
                 printf("                           *   > ");
