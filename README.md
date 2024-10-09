@@ -9,7 +9,7 @@ Ex) *e2* + Enter selects the piece located at *e2*, the *e4* + Enter moves the p
 3. ```./chess```
 
 ## Preview:
-![preview](./Images/preview.png)
+![preview](./Images/preview1.png)
 
 ## To do:
 - Game over scenarios (checkmate, stalemate and draw)
