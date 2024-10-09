@@ -12,6 +12,8 @@ void castle();
 
 int charInputToIndex(char ch);
 
+void getAvailableMoves(p pieces[], int selected_piece, int board[BOARD_SIZE][BOARD_SIZE]);
+
 int getPiece(p pieces[], int x_pos, int y_pos);
 
 move getMove(p pieces[], bool nextPlayer);

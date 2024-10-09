@@ -253,25 +253,29 @@ int getPiece(p pieces[], int x_pos, int y_pos)
 move getMove(p pieces[], bool nextPlayer)
 {
     move m;
-    char input[6];
+    char inputDest[6];
+    char inputPiece[6];
 
     while(1)
     {
-        scanf("%6s", input);
+        scanf("%6s", inputPiece);
+        m.start_x = charInputToIndex(inputPiece[0]);
+        m.start_y = BOARD_SIZE - atoi(&inputPiece[1]);
+        m.piece = getPiece(pieces, m.start_x, m.start_y);
+        print_available_moves(pieces, false, nextPlayer, m.piece);
+        printf("                           *   > ");
 
-        if(strcmp(input, "0-0") == 0)
+        scanf("%6s", inputDest);
+
+        if(strcmp(inputDest, "0-0") == 0)
             m.move_type = KINGCASTLE;
-        else if(strcmp(input, "0-0-0") == 0)
+        else if(strcmp(inputDest, "0-0-0") == 0)
             m.move_type = QUEENCASTLE;
         else
         {
             m.move_type = DEFAULT;
-            m.start_x = charInputToIndex(input[0]);
-            m.start_y = BOARD_SIZE - atoi(&input[1]);
-            m.dest_x = charInputToIndex(input[2]);
-            m.dest_y = BOARD_SIZE - atoi(&input[3]);
-
-            m.piece = getPiece(pieces, m.start_x, m.start_y);
+            m.dest_x = charInputToIndex(inputDest[0]);
+            m.dest_y = BOARD_SIZE - atoi(&inputDest[1]);
             if(m.piece == 404)
             {
                 //printf("No piece located at %c%c! Try again: ", input[0], input[1]); 

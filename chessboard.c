@@ -1,5 +1,6 @@
 #include "definitions.h"
 #include "chessboard.h"
+#include "./pieces/pieces.h"
 #include <stdio.h>
 #include <stdbool.h>
 
@@ -20,6 +21,62 @@ void getBoard(p pieces[], int board[BOARD_SIZE][BOARD_SIZE])
         if(pieces[i].state != CAPTURED)
         {
             board[pieces[i].x][pieces[i].y] = i;
+        }
+    }
+}
+
+void getAvailableMoves(p pieces[], int selected_piece, int board[BOARD_SIZE][BOARD_SIZE])
+{
+    int dboard[BOARD_SIZE][BOARD_SIZE];
+    getBoard(pieces, dboard);
+    int x, y;
+    for(y = 0; y < BOARD_SIZE; y++)
+    {
+        for(x = 0; x < BOARD_SIZE; x++)
+        {
+            board[x][y] = 0;
+            switch(selected_piece){
+                case BPAWN1: case BPAWN2: case BPAWN3: case BPAWN4: case BPAWN5: case BPAWN6: case BPAWN7: case BPAWN8:
+                    if(visible_to_pawn(pieces, pieces[selected_piece], x, y) == 1 && (dboard[x][y] == EMPTY_COORDINATE || dboard[x][y] >= 16))
+                        board[x][y] = 1;
+                    break;
+                case WPAWN1: case WPAWN2: case WPAWN3: case WPAWN4: case WPAWN5: case WPAWN6: case WPAWN7: case WPAWN8:
+                    if(visible_to_pawn(pieces, pieces[selected_piece], x, y) == 1 && (dboard[x][y] == EMPTY_COORDINATE || dboard[x][y] < 16))
+                        board[x][y] = 1;
+                    break;
+                case BBISHOP1: case BBISHOP2: 
+                    if(visible_to_bishop(pieces, pieces[selected_piece], x, y) == 1 && (dboard[x][y] == EMPTY_COORDINATE || dboard[x][y] >= 16))
+                        board[x][y] = 1;
+                    break;
+                case WBISHOP1: case WBISHOP2:
+                    if(visible_to_bishop(pieces, pieces[selected_piece], x, y) == 1 && (dboard[x][y] == EMPTY_COORDINATE || dboard[x][y] < 16))
+                        board[x][y] = 1;
+                    break;
+                case BROOK1: case BROOK2: 
+                    if(visible_to_rook(pieces, pieces[selected_piece], x, y) == 1 && (dboard[x][y] == EMPTY_COORDINATE || dboard[x][y] >= 16))
+                        board[x][y] = 1;
+                    break;
+                case WROOK1: case WROOK2:
+                    if(visible_to_rook(pieces, pieces[selected_piece], x, y) == 1 && (dboard[x][y] == EMPTY_COORDINATE || dboard[x][y] < 16))
+                        board[x][y] = 1;
+                    break;
+                case BKNIGHT1: case BKNIGHT2: 
+                    if(visible_to_knight(pieces, pieces[selected_piece], x, y) == 1 && (dboard[x][y] == EMPTY_COORDINATE || dboard[x][y] >= 16))
+                        board[x][y] = 1;
+                    break;
+                case WKNIGHT1: case WKNIGHT2:
+                    if(visible_to_knight(pieces, pieces[selected_piece], x, y) == 1 && (dboard[x][y] == EMPTY_COORDINATE || dboard[x][y] < 16))
+                        board[x][y] = 1;
+                    break;
+                case BQUEEN: 
+                    if(visible_to_queen(pieces, pieces[selected_piece], x, y) == 1 && (dboard[x][y] == EMPTY_COORDINATE || dboard[x][y] >= 16))
+                        board[x][y] = 1;
+                    break;
+                case WQUEEN:
+                    if(visible_to_queen(pieces, pieces[selected_piece], x, y) == 1 && (dboard[x][y] == EMPTY_COORDINATE || dboard[x][y] < 16))
+                        board[x][y] = 1;
+                    break;
+            }
         }
     }
 }
@@ -71,6 +128,74 @@ void new_board(p pieces[])
     }
 }
 
+void print_available_moves(p pieces[], bool is_illegal_move, bool nextPlayer, int selected_piece)
+{ 
+    int x, y, i = 0, board[BOARD_SIZE][BOARD_SIZE];
+    getBoard(pieces, board);
+    int available[BOARD_SIZE][BOARD_SIZE];
+    getAvailableMoves(pieces, selected_piece, available);
+
+    printf("\n");
+    printf("\n");
+    printf("   a  b  c  d  e  f  g  h  * * * * * * * * * * * * * * * *\n");
+    for(y = 0; y < BOARD_SIZE; y++)
+    {   
+        printf("%d ", BOARD_SIZE - y);
+        for(x = 0; x < BOARD_SIZE; x++)
+        {
+            if((i % 2 == 0) && (board[x][y] < 16)) 
+            {   
+                if(available[x][y] == 1)
+                    printf(COLOR_WHITE_BG_GREEN" "COLOR_BLUE_BG_GREEN"%c"COLOR_RESET""COLOR_WHITE_BG_GREEN" "COLOR_RESET, getPieceChar(board[x][y], pieces));
+                else
+                    printf(COLOR_WHITE_BG_WHITE" "COLOR_BLUE_BG_WHITE"%c"COLOR_RESET""COLOR_WHITE_BG_WHITE" "COLOR_RESET, getPieceChar(board[x][y], pieces));
+            }
+            else if((i % 2 != 0) && (board[x][y] < 16))
+            {
+                if(available[x][y] == 1)
+                    printf(COLOR_WHITE_BG_GREEN" "COLOR_BLUE_BG_GREEN"%c"COLOR_RESET""COLOR_WHITE_BG_GREEN" "COLOR_RESET, getPieceChar(board[x][y], pieces));
+                else
+                    printf(COLOR_WHITE_BG_TRANSPARENT" "COLOR_BLUE_BG_TRANSPARENT"%c"COLOR_RESET""COLOR_WHITE_BG_TRANSPARENT" "COLOR_RESET, getPieceChar(board[x][y], pieces));
+            }
+            if((i % 2 == 0) && (board[x][y] >= 16)) 
+            {
+                if(available[x][y] == 1)
+                    printf(COLOR_WHITE_BG_GREEN" %c "COLOR_RESET, getPieceChar(board[x][y], pieces));
+                else
+                    printf(COLOR_WHITE_BG_WHITE" %c "COLOR_RESET, getPieceChar(board[x][y], pieces));
+            }
+            else if((i % 2 != 0) && (board[x][y] >= 16))
+            {
+                if(available[x][y] == 1)
+                    printf(COLOR_WHITE_BG_GREEN" %c "COLOR_RESET, getPieceChar(board[x][y], pieces));
+                else
+                    printf(COLOR_WHITE_BG_TRANSPARENT" %c "COLOR_RESET, getPieceChar(board[x][y], pieces));
+            }
+            i++;
+        }
+        printf(" *");
+        if(y == 0)
+        {
+            printf("   ");
+            for(i = 0; i < NR_OF_PIECES; i++)
+            {
+                if(i < 16 && pieces[i].state == CAPTURED)
+                    printf(COLOR_BLUE_BG_TRANSPARENT"%c "COLOR_RESET, getPieceChar(i, pieces));
+                else if(i >= 16 && pieces[i].state == CAPTURED)
+                    printf(COLOR_WHITE_BG_TRANSPARENT"%c "COLOR_RESET, getPieceChar(i, pieces));
+            }
+            int balance = calculatePiecePoints(pieces);
+            if(balance != 0) printf("  %d", balance);
+        }
+        
+        if(y == 6) printf("   ___________________________");
+        if(y == 7 && is_illegal_move) printf("   "COLOR_RED"Illegal move! Try again: "COLOR_RESET);
+        else if(y == 7) printf("   %s's turn! Destination: ", nextPlayer ? "White" : COLOR_BLUE_BG_TRANSPARENT"Black"COLOR_RESET);
+        printf("\n");
+        i++;
+    }
+}
+
 void print_chessboard_v2(p pieces[], bool is_illegal_move, bool nextPlayer)
 { 
     int x, y, i = 0, board[BOARD_SIZE][BOARD_SIZE];
@@ -112,7 +237,7 @@ void print_chessboard_v2(p pieces[], bool is_illegal_move, bool nextPlayer)
         
         if(y == 6) printf("   ___________________________");
         if(y == 7 && is_illegal_move) printf("   "COLOR_RED"Illegal move! Try again: "COLOR_RESET);
-        else if(y == 7) printf("   %s's turn! Enter move: ", nextPlayer ? "White" : COLOR_BLUE_BG_TRANSPARENT"Black"COLOR_RESET);
+        else if(y == 7) printf("   %s's turn! Piece: ", nextPlayer ? "White" : COLOR_BLUE_BG_TRANSPARENT"Black"COLOR_RESET);
         printf("\n");
         i++;
     }
@@ -204,6 +329,4 @@ int calculatePiecePoints(p pieces[])
     }
     return balance;
 }
-
-
 
