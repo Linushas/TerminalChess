@@ -71,46 +71,8 @@ void new_board(p pieces[])
     }
 }
 
-void print_chessboard(p pieces[])
-{
-    int x, y, i = 0, board[BOARD_SIZE][BOARD_SIZE];
-    getBoard(pieces, board);
-
-    printf("\n");
-    for(i = 0; i < NR_OF_PIECES; i++)
-    {
-        if(i < 16 && pieces[i].state == CAPTURED)
-            printf("\033[34;1;1m%c \033[m", getPieceChar(i, pieces));
-        else if(i >= 16 && pieces[i].state == CAPTURED)
-            printf("\033[0;1;1m%c \033[m", getPieceChar(i, pieces));
-    }
-    printf(" = %d", calculatePiecePoints(pieces));
-
-    printf("\n");
-    printf("   a  b  c  d  e  f  g  h\n");
-    for(y = 0; y < BOARD_SIZE; y++)
-    {   
-        printf("%d ", BOARD_SIZE - y);
-        for(x = 0; x < BOARD_SIZE; x++)
-        {
-            if((i % 2 == 0) && (board[x][y] < 16)) 
-                printf("\033[1;1;47m \033[34;1;47m%c\033[m\033[1;1;47m \033[m", getPieceChar(board[x][y], pieces));
-            else if((i % 2 != 0) && (board[x][y] < 16))
-                printf("\033[1;1;1m \033[34;1;1m%c\033[m\033[1;1;1m \033[m", getPieceChar(board[x][y], pieces));
-            if((i % 2 == 0) && (board[x][y] >= 16)) 
-                printf("\033[0;1;47m %c \033[m", getPieceChar(board[x][y], pieces));
-            else if((i % 2 != 0) && (board[x][y] >= 16))
-                printf("\033[0;1;1m %c \033[m", getPieceChar(board[x][y], pieces));
-            i++;
-        }
-        printf("\n");
-        i++;
-    }
-    printf("\n");
-}
-
 void print_chessboard_v2(p pieces[], bool is_illegal_move, bool nextPlayer)
-{
+{ 
     int x, y, i = 0, board[BOARD_SIZE][BOARD_SIZE];
     getBoard(pieces, board);
 
@@ -124,13 +86,13 @@ void print_chessboard_v2(p pieces[], bool is_illegal_move, bool nextPlayer)
         for(x = 0; x < BOARD_SIZE; x++)
         {
             if((i % 2 == 0) && (board[x][y] < 16)) 
-                printf(COLOR_WHITE2_BG_BLACK" "COLOR_BLUE_BG_BLACK"%c"COLOR_RESET""COLOR_WHITE2_BG_BLACK" "COLOR_RESET, getPieceChar(board[x][y], pieces));
+                printf(COLOR_WHITE_BG_WHITE" "COLOR_BLUE_BG_WHITE"%c"COLOR_RESET""COLOR_WHITE_BG_WHITE" "COLOR_RESET, getPieceChar(board[x][y], pieces));
             else if((i % 2 != 0) && (board[x][y] < 16))
-                printf(COLOR_WHITE2_BG_WHITE" "COLOR_BLUE_BG_WHITE"%c"COLOR_RESET""COLOR_WHITE2_BG_WHITE" "COLOR_RESET, getPieceChar(board[x][y], pieces));
+                printf(COLOR_WHITE_BG_TRANSPARENT" "COLOR_BLUE_BG_TRANSPARENT"%c"COLOR_RESET""COLOR_WHITE_BG_TRANSPARENT" "COLOR_RESET, getPieceChar(board[x][y], pieces));
             if((i % 2 == 0) && (board[x][y] >= 16)) 
-                printf(COLOR_WHITE_BG_BLACK" %c "COLOR_RESET, getPieceChar(board[x][y], pieces));
-            else if((i % 2 != 0) && (board[x][y] >= 16))
                 printf(COLOR_WHITE_BG_WHITE" %c "COLOR_RESET, getPieceChar(board[x][y], pieces));
+            else if((i % 2 != 0) && (board[x][y] >= 16))
+                printf(COLOR_WHITE_BG_TRANSPARENT" %c "COLOR_RESET, getPieceChar(board[x][y], pieces));
             i++;
         }
         printf(" *");
@@ -140,9 +102,9 @@ void print_chessboard_v2(p pieces[], bool is_illegal_move, bool nextPlayer)
             for(i = 0; i < NR_OF_PIECES; i++)
             {
                 if(i < 16 && pieces[i].state == CAPTURED)
-                    printf(COLOR_BLUE_BG_WHITE"%c "COLOR_RESET, getPieceChar(i, pieces));
+                    printf(COLOR_BLUE_BG_TRANSPARENT"%c "COLOR_RESET, getPieceChar(i, pieces));
                 else if(i >= 16 && pieces[i].state == CAPTURED)
-                    printf(COLOR_WHITE_BG_WHITE"%c "COLOR_RESET, getPieceChar(i, pieces));
+                    printf(COLOR_WHITE_BG_TRANSPARENT"%c "COLOR_RESET, getPieceChar(i, pieces));
             }
             int balance = calculatePiecePoints(pieces);
             if(balance != 0) printf("  %d", balance);

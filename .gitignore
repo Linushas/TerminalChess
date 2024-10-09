@@ -2,3 +2,4 @@
 *.exe
 chess
 build.sh
+build.ps1
