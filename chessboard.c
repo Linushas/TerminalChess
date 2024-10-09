@@ -3,6 +3,7 @@
 #include "./pieces/pieces.h"
 #include <stdio.h>
 #include <stdbool.h>
+#include <stdlib.h>
 
 void getBoard(p pieces[], int board[BOARD_SIZE][BOARD_SIZE])
 {
@@ -181,11 +182,20 @@ void print_available_moves(p pieces[], bool is_illegal_move, bool nextPlayer, in
             {
                 if(i < 16 && pieces[i].state == CAPTURED)
                     printf(COLOR_BLUE_BG_TRANSPARENT"%c "COLOR_RESET, getPieceChar(i, pieces));
-                else if(i >= 16 && pieces[i].state == CAPTURED)
+            }
+            int balance = calculatePiecePoints(pieces);
+            if(balance < 0) printf("  +%d", abs(balance));
+        }
+        if(y == 2)
+        {
+            printf("   ");
+            for(i = 0; i < NR_OF_PIECES; i++)
+            {
+                if(i >= 16 && pieces[i].state == CAPTURED)
                     printf(COLOR_WHITE_BG_TRANSPARENT"%c "COLOR_RESET, getPieceChar(i, pieces));
             }
             int balance = calculatePiecePoints(pieces);
-            if(balance != 0) printf("  %d", balance);
+            if(balance > 0) printf("  +%d", balance);
         }
         
         if(y == 6) printf("   ___________________________");
@@ -228,11 +238,20 @@ void print_chessboard_v2(p pieces[], bool is_illegal_move, bool nextPlayer)
             {
                 if(i < 16 && pieces[i].state == CAPTURED)
                     printf(COLOR_BLUE_BG_TRANSPARENT"%c "COLOR_RESET, getPieceChar(i, pieces));
-                else if(i >= 16 && pieces[i].state == CAPTURED)
+            }
+            int balance = calculatePiecePoints(pieces);
+            if(balance < 0) printf("  +%d", abs(balance));
+        }
+        if(y == 2)
+        {
+            printf("   ");
+            for(i = 0; i < NR_OF_PIECES; i++)
+            {
+                if(i >= 16 && pieces[i].state == CAPTURED)
                     printf(COLOR_WHITE_BG_TRANSPARENT"%c "COLOR_RESET, getPieceChar(i, pieces));
             }
             int balance = calculatePiecePoints(pieces);
-            if(balance != 0) printf("  %d", balance);
+            if(balance > 0) printf("  +%d", balance);
         }
         
         if(y == 6) printf("   ___________________________");
