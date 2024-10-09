@@ -112,7 +112,7 @@ void print_chessboard_v2(p pieces[], bool is_illegal_move, bool nextPlayer)
         
         if(y == 6) printf("   ___________________________");
         if(y == 7 && is_illegal_move) printf("   "COLOR_RED"Illegal move! Try again: "COLOR_RESET);
-        else if(y == 7) printf("   %s's turn! Enter move: ", nextPlayer ? "White" : "Black");
+        else if(y == 7) printf(COLOR_BLUE_BG_TRANSPARENT"   %s"COLOR_RESET"'s turn! Enter move: ", nextPlayer ? "White" : "Black");
         printf("\n");
         i++;
     }
