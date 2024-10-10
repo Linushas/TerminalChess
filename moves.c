@@ -127,7 +127,13 @@ int executeMove(move m, p pieces[], bool nextPlayer)
         if(castle(pieces, nextPlayer, m.move_type) == 0)
             return 0;
     }
-        
+
+    int is_checkmate = checkmate(m, pieces);
+    if(is_checkmate == WHITE_CHECKMATE)
+        return 2;
+    else if(is_checkmate == BLACK_CHECKMATE)
+        return 3;
+
     return 1;
 }
 
@@ -382,4 +388,254 @@ move getMove(p pieces[], bool nextPlayer)
     }
     //printf("piece: %d, x1:%d, y1:%d, x2:%d, y2:%d, move type:%d, direction:%d\n", m.piece, m.start_x, m.start_y, m.dest_x, m.dest_y, m.move_type, m.direction);
     return m;
+}
+
+int checkmate(move m, p pieces[])
+{
+    p temp_pieces[NR_OF_PIECES];
+    int board[BOARD_SIZE][BOARD_SIZE];
+    getBoard(pieces, board);
+    bool black_escape = false, white_escape = false;
+
+// Black King
+    if(board[pieces[BKING].x + 1][pieces[BKING].y] == EMPTY_COORDINATE)
+    {
+        if(!(pieces[BKING].x + 1 >= BOARD_SIZE || pieces[BKING].x + 1 < 0))
+        {
+            int i;
+            for(i = 0; i < NR_OF_PIECES; i++)
+            {
+                temp_pieces[i] = pieces[i];
+            }
+            temp_pieces[BKING].x += 1;
+            if(!(in_check(temp_pieces) == BLACK_IN_CHECK))
+                black_escape = true;
+        }
+    }
+    if(board[pieces[BKING].x - 1][pieces[BKING].y] == EMPTY_COORDINATE)
+    {
+        if(!(pieces[BKING].x - 1 >= BOARD_SIZE || pieces[BKING].x - 1 < 0))
+        {
+            int i;
+            for(i = 0; i < NR_OF_PIECES; i++)
+            {
+                temp_pieces[i] = pieces[i];
+            }
+            temp_pieces[BKING].x -= 1;
+            if(!(in_check(temp_pieces) == BLACK_IN_CHECK))
+                black_escape = true;
+        }
+    }
+    else if(board[pieces[BKING].x][pieces[BKING].y + 1] == EMPTY_COORDINATE)
+    {
+        if(!(pieces[BKING].y + 1 >= BOARD_SIZE || pieces[BKING].y + 1 < 0))
+        {
+            int i;
+            for(i = 0; i < NR_OF_PIECES; i++)
+            {
+                temp_pieces[i] = pieces[i];
+            }
+            temp_pieces[BKING].y += 1;
+            if(!(in_check(temp_pieces) == BLACK_IN_CHECK))
+                black_escape = true;
+        }
+    }
+    if(board[pieces[BKING].x][pieces[BKING].y - 1] == EMPTY_COORDINATE)
+    {
+        if(!(pieces[BKING].y - 1 >= BOARD_SIZE || pieces[BKING].y - 1 < 0))
+        {
+            int i;
+            for(i = 0; i < NR_OF_PIECES; i++)
+            {
+                temp_pieces[i] = pieces[i];
+            }
+            temp_pieces[BKING].y -= 1;
+            if(!(in_check(temp_pieces) == BLACK_IN_CHECK))
+                black_escape = true;
+        }
+    }
+    if(board[pieces[BKING].x + 1][pieces[BKING].y + 1] == EMPTY_COORDINATE)
+    {
+        if(!(pieces[BKING].x + 1 >= BOARD_SIZE || pieces[BKING].x + 1 < 0 || pieces[BKING].y + 1 >= BOARD_SIZE || pieces[BKING].y + 1 < 0))
+        {
+            int i;
+            for(i = 0; i < NR_OF_PIECES; i++)
+            {
+                temp_pieces[i] = pieces[i];
+            }
+            temp_pieces[BKING].x += 1;
+            temp_pieces[BKING].y += 1;
+            if(!(in_check(temp_pieces) == BLACK_IN_CHECK))
+                black_escape = true;
+        }
+    }
+    if(board[pieces[BKING].x - 1][pieces[BKING].y - 1] == EMPTY_COORDINATE)
+    {
+        if(!(pieces[BKING].x - 1 >= BOARD_SIZE || pieces[BKING].x - 1 < 0 || pieces[BKING].y - 1 >= BOARD_SIZE || pieces[BKING].y - 1 < 0))
+        {
+            int i;
+            for(i = 0; i < NR_OF_PIECES; i++)
+            {
+                temp_pieces[i] = pieces[i];
+            }
+            temp_pieces[BKING].x -= 1;
+            temp_pieces[BKING].y -= 1;
+            if(!(in_check(temp_pieces) == BLACK_IN_CHECK))
+                black_escape = true;
+        }
+    }
+    if(board[pieces[BKING].x - 1][pieces[BKING].y + 1] == EMPTY_COORDINATE)
+    {
+        if(!(pieces[BKING].x - 1 >= BOARD_SIZE || pieces[BKING].x - 1 < 0 || pieces[BKING].y + 1 >= BOARD_SIZE || pieces[BKING].y + 1 < 0))
+        {
+            int i;
+            for(i = 0; i < NR_OF_PIECES; i++)
+            {
+                temp_pieces[i] = pieces[i];
+            }
+            temp_pieces[BKING].x -= 1;
+            temp_pieces[BKING].y += 1;
+            if(!(in_check(temp_pieces) == BLACK_IN_CHECK))
+                black_escape = true;
+        }
+    }
+    if(board[pieces[BKING].x + 1][pieces[BKING].y - 1] == EMPTY_COORDINATE)
+    {
+        if(!(pieces[BKING].x + 1 >= BOARD_SIZE || pieces[BKING].x + 1 < 0 || pieces[BKING].y - 1 >= BOARD_SIZE || pieces[BKING].y - 1 < 0))
+        {
+            int i;
+            for(i = 0; i < NR_OF_PIECES; i++)
+            {
+                temp_pieces[i] = pieces[i];
+            }
+            temp_pieces[BKING].x += 1;
+            temp_pieces[BKING].y -= 1;
+            if(!(in_check(temp_pieces) == BLACK_IN_CHECK))
+                black_escape = true;
+        }
+    }
+    if(in_check(pieces) == BLACK_IN_CHECK && black_escape == false) 
+        return BLACK_CHECKMATE;
+
+// White king
+    if(board[pieces[WKING].x + 1][pieces[WKING].y] == EMPTY_COORDINATE)
+    {
+        if(!(pieces[WKING].x + 1 >= BOARD_SIZE || pieces[WKING].x + 1 < 0))
+        {
+            int i;
+            for(i = 0; i < NR_OF_PIECES; i++)
+            {
+                temp_pieces[i] = pieces[i];
+            }
+            temp_pieces[WKING].x += 1;
+            if(!(in_check(temp_pieces) == WHITE_IN_CHECK))
+                white_escape = true;
+        }
+    }
+    if(board[pieces[WKING].x - 1][pieces[WKING].y] == EMPTY_COORDINATE)
+    {
+        if(!(pieces[WKING].x - 1 >= BOARD_SIZE || pieces[WKING].x - 1 < 0))
+        {
+            int i;
+            for(i = 0; i < NR_OF_PIECES; i++)
+            {
+                temp_pieces[i] = pieces[i];
+            }
+            temp_pieces[WKING].x -= 1;
+            if(!(in_check(temp_pieces) == WHITE_IN_CHECK))
+                white_escape = true;
+        }
+    }
+    else if(board[pieces[WKING].x][pieces[WKING].y + 1] == EMPTY_COORDINATE)
+    {
+        if(!(pieces[WKING].y + 1 >= BOARD_SIZE || pieces[WKING].y + 1 < 0))
+        {
+            int i;
+            for(i = 0; i < NR_OF_PIECES; i++)
+            {
+                temp_pieces[i] = pieces[i];
+            }
+            temp_pieces[WKING].y += 1;
+            if(!(in_check(temp_pieces) == WHITE_IN_CHECK))
+                white_escape = true;
+        }
+    }
+    if(board[pieces[WKING].x][pieces[WKING].y - 1] == EMPTY_COORDINATE)
+    {
+        if(!(pieces[WKING].y - 1 >= BOARD_SIZE || pieces[WKING].y - 1 < 0))
+        {
+            int i;
+            for(i = 0; i < NR_OF_PIECES; i++)
+            {
+                temp_pieces[i] = pieces[i];
+            }
+            temp_pieces[WKING].y -= 1;
+            if(!(in_check(temp_pieces) == WHITE_IN_CHECK))
+                white_escape = true;
+        }
+    }
+    if(board[pieces[WKING].x + 1][pieces[WKING].y + 1] == EMPTY_COORDINATE)
+    {
+        if(!(pieces[WKING].x + 1 >= BOARD_SIZE || pieces[WKING].x + 1 < 0 || pieces[WKING].y + 1 >= BOARD_SIZE || pieces[WKING].y + 1 < 0))
+        {
+            int i;
+            for(i = 0; i < NR_OF_PIECES; i++)
+            {
+                temp_pieces[i] = pieces[i];
+            }
+            temp_pieces[WKING].x += 1;
+            temp_pieces[WKING].y += 1;
+            if(!(in_check(temp_pieces) == WHITE_IN_CHECK))
+                white_escape = true;
+        }
+    }
+    if(board[pieces[WKING].x - 1][pieces[WKING].y - 1] == EMPTY_COORDINATE)
+    {
+        if(!(pieces[WKING].x - 1 >= BOARD_SIZE || pieces[WKING].x - 1 < 0 || pieces[WKING].y - 1 >= BOARD_SIZE || pieces[WKING].y - 1 < 0))
+        {
+            int i;
+            for(i = 0; i < NR_OF_PIECES; i++)
+            {
+                temp_pieces[i] = pieces[i];
+            }
+            temp_pieces[WKING].x -= 1;
+            temp_pieces[WKING].y -= 1;
+            if(!(in_check(temp_pieces) == WHITE_IN_CHECK))
+                white_escape = true;
+        }
+    }
+    if(board[pieces[WKING].x - 1][pieces[WKING].y + 1] == EMPTY_COORDINATE)
+    {
+        if(!(pieces[WKING].x - 1 >= BOARD_SIZE || pieces[WKING].x - 1 < 0 || pieces[WKING].y + 1 >= BOARD_SIZE || pieces[WKING].y + 1 < 0))
+        {
+            int i;
+            for(i = 0; i < NR_OF_PIECES; i++)
+            {
+                temp_pieces[i] = pieces[i];
+            }
+            temp_pieces[WKING].x -= 1;
+            temp_pieces[WKING].y += 1;
+            if(!(in_check(temp_pieces) == WHITE_IN_CHECK))
+                white_escape = true;
+        }
+    }
+    if(board[pieces[WKING].x + 1][pieces[WKING].y - 1] == EMPTY_COORDINATE)
+    {
+        if(!(pieces[WKING].x + 1 >= BOARD_SIZE || pieces[WKING].x + 1 < 0 || pieces[WKING].y - 1 >= BOARD_SIZE || pieces[WKING].y - 1 < 0))
+        {
+            int i;
+            for(i = 0; i < NR_OF_PIECES; i++)
+            {
+                temp_pieces[i] = pieces[i];
+            }
+            temp_pieces[WKING].x += 1;
+            temp_pieces[WKING].y -= 1;
+            if(!(in_check(temp_pieces) == WHITE_IN_CHECK))
+                white_escape = true;
+        }
+    }
+    if(in_check(pieces) == WHITE_IN_CHECK && white_escape == false) 
+        return WHITE_CHECKMATE;
+
+    return 0;
 }

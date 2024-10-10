@@ -18,4 +18,6 @@ int getPiece(p pieces[], int x_pos, int y_pos);
 
 move getMove(p pieces[], bool nextPlayer);
 
+int checkmate(move m, p pieces[]);
+
 #endif

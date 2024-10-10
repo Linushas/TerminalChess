@@ -21,30 +21,51 @@ int main()
     bool nextPlayer = WHITE;
     p pieces[NR_OF_PIECES];
     new_board(pieces);
+    int winning_player;
 
-    bool game_over = false;
-    while(!game_over)
+    while(1)
     {
-        //print_chessboard(pieces);
-        print_chessboard_v2(pieces, false, nextPlayer);
-        printf("                           *   > ");
-        while(1)
+        nextPlayer = WHITE;
+        new_board(pieces);
+        bool game_over = false;
+        while(!game_over)
         {
-            move m = getMove(pieces, nextPlayer);
-            int n = executeMove(m, pieces, nextPlayer);
-            if(n == 1)
-                break;
-            else if(n == 2){
-                game_over = true;
-                break;
-            }
-            else
+            print_chessboard_v2(pieces, false, nextPlayer);
+            printf("                           *   > ");
+            while(1)
             {
-                print_chessboard_v2(pieces, true, nextPlayer);
-                printf("                           *   > ");
+                move m = getMove(pieces, nextPlayer);
+                int n = executeMove(m, pieces, nextPlayer);
+                if(n == 1)
+                    break;
+                else if(n == 2){
+                    game_over = true;
+                    winning_player = BLACK;
+                    break;
+                }
+                else if(n == 3){
+                    game_over = true;
+                    winning_player = WHITE;
+                    break;
+                }
+                else
+                {
+                    print_chessboard_v2(pieces, true, nextPlayer);
+                    printf("                           *   > ");
+                }
             }
+            nextPlayer = nextPlayer ? BLACK : WHITE;
         }
-        nextPlayer = nextPlayer ? BLACK : WHITE;
+        printf("\nCheckmate! %s wins!\n", winning_player ? "Black" : "White");
+
+        printf("Play again? (Y/n): ");
+        char playAgain;
+        scanf(" %c", &playAgain);
+        if(playAgain == 'Y')
+            continue;
+        else if(playAgain == 'n')
+            break;
+        else break;
     }
 
     return 0;

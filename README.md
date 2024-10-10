@@ -12,6 +12,5 @@ Ex) *e2* + Enter selects the piece located at *e2*, the *e4* + Enter moves the p
 ![preview](./Images/preview1.png)
 
 ## To do:
-- Game over scenarios (checkmate, stalemate and draw)
 - En passant
 - Chessengine (minimax algorithm)
