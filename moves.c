@@ -123,7 +123,10 @@ int executeMove(move m, p pieces[], bool nextPlayer)
         }
     }
     else if(m.move_type == KINGCASTLE || m.move_type == QUEENCASTLE)
-        castle();
+    {
+        if(castle(pieces, nextPlayer, m.move_type) == 0)
+            return 0;
+    }
         
     return 1;
 }
@@ -217,9 +220,65 @@ int in_check(p pieces[])
     else return NOT_IN_CHECK;
 }
 
-void castle()
+int castle(p pieces[], bool nextPlayer, int move_type)
 {
-
+    int board[BOARD_SIZE][BOARD_SIZE];
+    getBoard(pieces, board);
+    if(nextPlayer)
+    {
+        if(move_type == KINGCASTLE)
+        {
+            if(board[5][7] != EMPTY_COORDINATE || board[6][7] != EMPTY_COORDINATE) return 0;
+            else
+            {
+                if(pieces[WROOK2].x == 7 && pieces[WROOK2].y == 7 && pieces[WKING].x == 4 && pieces[WKING].y == 7)
+                {
+                    pieces[WROOK2].x = 5;
+                    pieces[WKING].x = 6;
+                }
+            }
+        }
+        else if(move_type == QUEENCASTLE)
+        {
+            if(board[3][7] != EMPTY_COORDINATE || board[2][7] != EMPTY_COORDINATE || board[1][7] != EMPTY_COORDINATE) return 0;
+            else
+            {
+                if(pieces[WROOK1].x == 0 && pieces[WROOK1].y == 7 && pieces[WKING].x == 4 && pieces[WKING].y == 7)
+                {
+                    pieces[WROOK1].x = 3;
+                    pieces[WKING].x = 2;
+                }
+            }
+        }
+    }
+    else
+    {
+        if(move_type == KINGCASTLE)
+        {
+            if(board[5][0] != EMPTY_COORDINATE || board[6][0] != EMPTY_COORDINATE) return 0;
+            else
+            {
+                if(pieces[BROOK2].x == 7 && pieces[BROOK2].y == 0 && pieces[BKING].x == 4 && pieces[BKING].y == 0)
+                {
+                    pieces[BROOK2].x = 5;
+                    pieces[BKING].x = 6;
+                }
+            }
+        }
+        else if(move_type == QUEENCASTLE)
+        {
+            if(board[3][0] != EMPTY_COORDINATE || board[2][0] != EMPTY_COORDINATE || board[1][0] != EMPTY_COORDINATE) return 0;
+            else
+            {
+                if(pieces[BROOK1].x == 0 && pieces[BROOK1].y == 0 && pieces[BKING].x == 4 && pieces[BKING].y == 0)
+                {
+                    pieces[BROOK1].x = 3;
+                    pieces[BKING].x = 2;
+                }
+            }
+        }
+    }
+    return 1;
 }
 
 int charInputToIndex(char ch)

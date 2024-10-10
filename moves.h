@@ -8,7 +8,7 @@ int executeMove(move m, p pieces[], bool nextPlayer);
 
 int in_check(p pieces[]);
 
-void castle();
+int castle(p pieces[], bool nextPlayer, int move_type);
 
 int charInputToIndex(char ch);
 

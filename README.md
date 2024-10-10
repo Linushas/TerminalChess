@@ -13,6 +13,5 @@ Ex) *e2* + Enter selects the piece located at *e2*, the *e4* + Enter moves the p
 
 ## To do:
 - Game over scenarios (checkmate, stalemate and draw)
-- Castling
 - En passant
 - Chessengine (minimax algorithm)
