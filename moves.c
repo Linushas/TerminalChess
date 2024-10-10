@@ -6,6 +6,92 @@
 #include <string.h>
 #include <stdlib.h>
 
+int validMove(move m, p pieces[])
+{
+    int board[BOARD_SIZE][BOARD_SIZE];
+    getBoard(pieces, board);
+    switch(m.piece)
+    {
+        case BPAWN1: case BPAWN2: case BPAWN3: case BPAWN4: case BPAWN5: case BPAWN6: case BPAWN7: case BPAWN8:
+            if(pieces[m.piece].state == PROMOTED)
+            {
+                if(visible_to_queen(pieces,pieces[m.piece], m.dest_x, m.dest_y) && (board[m.dest_x][m.dest_y] >= 16 || board[m.dest_x][m.dest_y] == EMPTY_COORDINATE))
+                    return 1;
+                else return 0;
+            }
+            else
+            {
+                if(visible_to_pawn(pieces,pieces[m.piece], m.dest_x, m.dest_y) && (board[m.dest_x][m.dest_y] >= 16 || board[m.dest_x][m.dest_y] == EMPTY_COORDINATE))
+                    return 1;
+                else return 0;
+            }
+            break;
+        case WPAWN1: case WPAWN2: case WPAWN3: case WPAWN4: case WPAWN5: case WPAWN6: case WPAWN7: case WPAWN8:
+            if(pieces[m.piece].state == PROMOTED)
+            {
+                if(visible_to_queen(pieces,pieces[m.piece], m.dest_x, m.dest_y) && (board[m.dest_x][m.dest_y] < 16 || board[m.dest_x][m.dest_y] == EMPTY_COORDINATE))
+                    return 1;
+                else return 0;
+            }
+            else
+            {
+                if(visible_to_pawn(pieces,pieces[m.piece], m.dest_x, m.dest_y) && (board[m.dest_x][m.dest_y] < 16 || board[m.dest_x][m.dest_y] == EMPTY_COORDINATE))
+                    return 1;
+                else return 0;
+            }
+            break;
+        case BROOK1: case BROOK2: 
+            if(visible_to_rook(pieces,pieces[m.piece], m.dest_x, m.dest_y) && (board[m.dest_x][m.dest_y] >= 16 || board[m.dest_x][m.dest_y] == EMPTY_COORDINATE))
+                return 1;
+            else return 0;
+            break;
+        case WROOK1: case WROOK2:
+            if(visible_to_rook(pieces,pieces[m.piece], m.dest_x, m.dest_y) && (board[m.dest_x][m.dest_y] < 16 || board[m.dest_x][m.dest_y] == EMPTY_COORDINATE))
+                return 1;
+            else return 0;
+            break;
+        case BBISHOP1: case BBISHOP2: 
+            if(visible_to_bishop(pieces,pieces[m.piece], m.dest_x, m.dest_y) && (board[m.dest_x][m.dest_y] >= 16 || board[m.dest_x][m.dest_y] == EMPTY_COORDINATE))
+                return 1;
+            else return 0;
+            break;
+        case WBISHOP1: case WBISHOP2:
+            if(visible_to_bishop(pieces,pieces[m.piece], m.dest_x, m.dest_y) && (board[m.dest_x][m.dest_y] < 16 || board[m.dest_x][m.dest_y] == EMPTY_COORDINATE))
+                return 1;
+            else return 0;
+            break;
+        case BKNIGHT1: case BKNIGHT2: 
+            if(visible_to_knight(pieces,pieces[m.piece], m.dest_x, m.dest_y) && (board[m.dest_x][m.dest_y] >= 16 || board[m.dest_x][m.dest_y] == EMPTY_COORDINATE))
+                return 1;
+            break;
+        case WKNIGHT1: case WKNIGHT2:
+            if(visible_to_knight(pieces,pieces[m.piece], m.dest_x, m.dest_y) && (board[m.dest_x][m.dest_y] < 16 || board[m.dest_x][m.dest_y] == EMPTY_COORDINATE))
+                return 1;
+            break;
+        case BKING: 
+            if(visible_to_king(pieces,pieces[m.piece], m.dest_x, m.dest_y) && (board[m.dest_x][m.dest_y] >= 16 || board[m.dest_x][m.dest_y] == EMPTY_COORDINATE))
+                return 1;
+            else return 0;
+            break;
+        case WKING:
+            if(visible_to_king(pieces,pieces[m.piece], m.dest_x, m.dest_y) && (board[m.dest_x][m.dest_y] < 16 || board[m.dest_x][m.dest_y] == EMPTY_COORDINATE))
+                return 1;
+            else return 0;
+            break;
+        case BQUEEN: 
+            if(visible_to_queen(pieces,pieces[m.piece], m.dest_x, m.dest_y) && (board[m.dest_x][m.dest_y] >= 16 || board[m.dest_x][m.dest_y] == EMPTY_COORDINATE))
+                return 1;
+            else return 0;
+            break;
+        case WQUEEN:
+            if(visible_to_queen(pieces,pieces[m.piece], m.dest_x, m.dest_y) && (board[m.dest_x][m.dest_y] < 16 || board[m.dest_x][m.dest_y] == EMPTY_COORDINATE))
+                return 1;
+            else return 0;
+            break;
+    }
+    return 0;
+}
+
 int executeMove(move m, p pieces[], bool nextPlayer)
 {
     if(m.move_type == DEFAULT)
@@ -13,17 +99,20 @@ int executeMove(move m, p pieces[], bool nextPlayer)
         int board[BOARD_SIZE][BOARD_SIZE];
         getBoard(pieces, board);
 
+        // if selected piece is of correct color
         if(m.piece < 16 && nextPlayer != 0)
             return 0;
         else if(m.piece >= 16 && nextPlayer != 1)
             return 0;
 
+        // stores the coordinates for captured piece
         int captured_coordinate = EMPTY_COORDINATE;
         if(board[m.dest_x][m.dest_y] != EMPTY_COORDINATE)
         {
             captured_coordinate = board[m.dest_x][m.dest_y];
         }
 
+        // copying pieces to temp_pieces
         p temp_pieces[NR_OF_PIECES];
         int i;
         for(i = 0; i < NR_OF_PIECES; i++)
@@ -31,71 +120,15 @@ int executeMove(move m, p pieces[], bool nextPlayer)
             temp_pieces[i] = pieces[i];
         }
 
-        switch(m.piece)
+        // checks if move is legal
+        if(validMove(m, temp_pieces))
         {
-            case BPAWN1: case BPAWN2: case BPAWN3: case BPAWN4: case BPAWN5: case BPAWN6: case BPAWN7: case BPAWN8:
-            case WPAWN1: case WPAWN2: case WPAWN3: case WPAWN4: case WPAWN5: case WPAWN6: case WPAWN7: case WPAWN8:
-                if(temp_pieces[m.piece].state == PROMOTED)
-                {
-                    if(queen_rules(m, temp_pieces) == 1)
-                    {
-                        temp_pieces[m.piece].x = m.dest_x;
-                        temp_pieces[m.piece].y = m.dest_y;
-                    }
-                    else return 0;
-                }
-                else
-                {
-                    if(pawn_rules(m, temp_pieces) == 1)
-                    {
-                        temp_pieces[m.piece].x = m.dest_x;
-                        temp_pieces[m.piece].y = m.dest_y;
-                    }
-                    else return 0;
-                }
-                break;
-            case BROOK1: case BROOK2: case WROOK1: case WROOK2:
-                if(rook_rules(m, temp_pieces) == 1)
-                {
-                    temp_pieces[m.piece].x = m.dest_x;
-                    temp_pieces[m.piece].y = m.dest_y;
-                }
-                else return 0;
-                break;
-            case BBISHOP1: case BBISHOP2: case WBISHOP1: case WBISHOP2:
-                if(bishop_rules(m, temp_pieces) == 1)
-                {
-                    temp_pieces[m.piece].x = m.dest_x;
-                    temp_pieces[m.piece].y = m.dest_y;
-                }
-                else return 0;
-                break;
-            case BKNIGHT1: case BKNIGHT2: case WKNIGHT1: case WKNIGHT2:
-                if(knight_rules(m) == 1)
-                {
-                    temp_pieces[m.piece].x = m.dest_x;
-                    temp_pieces[m.piece].y = m.dest_y;
-                }
-                else return 0;
-                break;
-            case BKING: case WKING:
-                if(king_rules(m, temp_pieces) == 1)
-                {
-                    temp_pieces[m.piece].x = m.dest_x;
-                    temp_pieces[m.piece].y = m.dest_y;
-                }
-                else return 0;
-                break;
-            case BQUEEN: case WQUEEN:
-                if(queen_rules(m, temp_pieces) == 1)
-                {
-                    temp_pieces[m.piece].x = m.dest_x;
-                    temp_pieces[m.piece].y = m.dest_y;
-                }
-                else return 0;
-                break;
+            temp_pieces[m.piece].x = m.dest_x;
+            temp_pieces[m.piece].y = m.dest_y;
         }
+        else return 0;
 
+        // checks is captured piece is of correct color
         if(16 <= captured_coordinate && captured_coordinate < 32 && m.piece >= 16)
             return 0;
         else if(16 > captured_coordinate && m.piece < 16)
@@ -106,6 +139,7 @@ int executeMove(move m, p pieces[], bool nextPlayer)
             temp_pieces[captured_coordinate].state = CAPTURED;
         }
 
+        // if move puts a king in check, move is illegal
         if(in_check(temp_pieces) == BLACK_IN_CHECK && m.piece < 16)
         {
             return 0;
@@ -114,12 +148,11 @@ int executeMove(move m, p pieces[], bool nextPlayer)
         {
             return 0;
         }
-        else
+        
+        // copying temp_pieces into pieces
+        for(i = 0; i < NR_OF_PIECES; i++)
         {
-            for(i = 0; i < NR_OF_PIECES; i++)
-            {
-                pieces[i] = temp_pieces[i];
-            }
+            pieces[i] = temp_pieces[i];
         }
     }
     else if(m.move_type == KINGCASTLE || m.move_type == QUEENCASTLE)

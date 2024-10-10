@@ -1,5 +1,6 @@
 #include "definitions.h"
 #include "chessboard.h"
+#include "moves.h"
 #include "./pieces/pieces.h"
 #include <stdio.h>
 #include <stdbool.h>
@@ -36,48 +37,15 @@ void getAvailableMoves(p pieces[], int selected_piece, int board[BOARD_SIZE][BOA
         for(x = 0; x < BOARD_SIZE; x++)
         {
             board[x][y] = 0;
-            switch(selected_piece){
-                case BPAWN1: case BPAWN2: case BPAWN3: case BPAWN4: case BPAWN5: case BPAWN6: case BPAWN7: case BPAWN8:
-                    if(visible_to_pawn(pieces, pieces[selected_piece], x, y) == 1 && (dboard[x][y] == EMPTY_COORDINATE || dboard[x][y] >= 16))
-                        board[x][y] = 1;
-                    break;
-                case WPAWN1: case WPAWN2: case WPAWN3: case WPAWN4: case WPAWN5: case WPAWN6: case WPAWN7: case WPAWN8:
-                    if(visible_to_pawn(pieces, pieces[selected_piece], x, y) == 1 && (dboard[x][y] == EMPTY_COORDINATE || dboard[x][y] < 16))
-                        board[x][y] = 1;
-                    break;
-                case BBISHOP1: case BBISHOP2: 
-                    if(visible_to_bishop(pieces, pieces[selected_piece], x, y) == 1 && (dboard[x][y] == EMPTY_COORDINATE || dboard[x][y] >= 16))
-                        board[x][y] = 1;
-                    break;
-                case WBISHOP1: case WBISHOP2:
-                    if(visible_to_bishop(pieces, pieces[selected_piece], x, y) == 1 && (dboard[x][y] == EMPTY_COORDINATE || dboard[x][y] < 16))
-                        board[x][y] = 1;
-                    break;
-                case BROOK1: case BROOK2: 
-                    if(visible_to_rook(pieces, pieces[selected_piece], x, y) == 1 && (dboard[x][y] == EMPTY_COORDINATE || dboard[x][y] >= 16))
-                        board[x][y] = 1;
-                    break;
-                case WROOK1: case WROOK2:
-                    if(visible_to_rook(pieces, pieces[selected_piece], x, y) == 1 && (dboard[x][y] == EMPTY_COORDINATE || dboard[x][y] < 16))
-                        board[x][y] = 1;
-                    break;
-                case BKNIGHT1: case BKNIGHT2: 
-                    if(visible_to_knight(pieces, pieces[selected_piece], x, y) == 1 && (dboard[x][y] == EMPTY_COORDINATE || dboard[x][y] >= 16))
-                        board[x][y] = 1;
-                    break;
-                case WKNIGHT1: case WKNIGHT2:
-                    if(visible_to_knight(pieces, pieces[selected_piece], x, y) == 1 && (dboard[x][y] == EMPTY_COORDINATE || dboard[x][y] < 16))
-                        board[x][y] = 1;
-                    break;
-                case BQUEEN: 
-                    if(visible_to_queen(pieces, pieces[selected_piece], x, y) == 1 && (dboard[x][y] == EMPTY_COORDINATE || dboard[x][y] >= 16))
-                        board[x][y] = 1;
-                    break;
-                case WQUEEN:
-                    if(visible_to_queen(pieces, pieces[selected_piece], x, y) == 1 && (dboard[x][y] == EMPTY_COORDINATE || dboard[x][y] < 16))
-                        board[x][y] = 1;
-                    break;
-            }
+            move m;
+            m.piece = selected_piece;
+            m.start_x = pieces[selected_piece].x;
+            m.start_y = pieces[selected_piece].y;
+            m.dest_x = x;
+            m.dest_y = y;
+            m.move_type = DEFAULT;
+            if(validMove(m, pieces))
+                board[x][y] = 1;
         }
     }
 }

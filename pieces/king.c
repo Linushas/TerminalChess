@@ -4,14 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int king_rules(move m, p pieces[])
+int visible_to_king(p pieces[], p king, int target_x, int target_y)
 {
-    int board[BOARD_SIZE][BOARD_SIZE];
-    getBoard(pieces, board);
-
-    int deltaY = abs(m.start_y - m.dest_y);
-    int deltaX = abs(m.start_x - m.dest_x);
-
-    if(deltaY <= 1 && deltaX <= 1) return 1;
-    else return 0;
+    return 0;
 }

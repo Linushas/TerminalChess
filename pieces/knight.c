@@ -4,12 +4,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int knight_rules(move m)
-{
-    if(m.direction == KNIGHT) return 1;
-    else return 0;
-}
-
 int visible_to_knight(p pieces[], p knight, int target_x, int target_y)
 {
     int dx = knight.x - target_x, dy = knight.y - target_y;

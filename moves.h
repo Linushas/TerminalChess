@@ -4,6 +4,8 @@
 #include "definitions.h"
 #include <stdbool.h>
 
+int validMove(move m, p pieces[]);
+
 int executeMove(move m, p pieces[], bool nextPlayer);
 
 int in_check(p pieces[]);
