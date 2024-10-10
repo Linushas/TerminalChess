@@ -1,6 +1,7 @@
 #include "definitions.h"
 #include "moves.h"
 #include "chessboard.h"
+#include "pvc.h"
 #include "./pieces/pieces.h"
 #include <stdio.h>
 #include <stdbool.h>
@@ -16,6 +17,16 @@ int main()
     "     |_|\\___|_|  |_| |_| |_|_|_| |_|\\__,_|_|  \\_____|_| |_|\\___||___/___/\n");
     printf("\n");
     printf("     https://github.com/Linusred/TerminalChess\n\n");
+
+    printf("Select mode - 1: player vs player, 2: player vs computer: ");
+    int mode;
+    scanf("%d", &mode);
+    if(mode == 2)
+    {
+        player_vs_computer();
+        return 0;
+    }
+    printf("\n");
 
     enum{BLACK, WHITE};
     bool nextPlayer = WHITE;
@@ -56,7 +67,7 @@ int main()
             }
             nextPlayer = nextPlayer ? BLACK : WHITE;
         }
-        printf("\nCheckmate! %s wins!\n", winning_player ? "Black" : "White");
+        printf("\nCheckmate! %s wins!\n", winning_player ? "White" : "Black");
 
         printf("Play again? (Y/n): ");
         char playAgain;
