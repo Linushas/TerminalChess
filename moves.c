@@ -13,6 +13,7 @@ int validMove(move m, p pieces[])
     switch(m.piece)
     {
         case BPAWN1: case BPAWN2: case BPAWN3: case BPAWN4: case BPAWN5: case BPAWN6: case BPAWN7: case BPAWN8:
+            
             if(pieces[m.piece].state == PROMOTED)
             {
                 if(visible_to_queen(pieces,pieces[m.piece], m.dest_x, m.dest_y) && (board[m.dest_x][m.dest_y] >= 16 || board[m.dest_x][m.dest_y] == EMPTY_COORDINATE))
@@ -127,6 +128,11 @@ int executeMove(move m, p pieces[], bool nextPlayer)
             temp_pieces[m.piece].y = m.dest_y;
         }
         else return 0;
+
+        if(m.piece < 8 && m.dest_y == 7)
+            temp_pieces[m.piece].state = PROMOTED;
+        else if(m.piece < 24 && m.piece >= 16 && m.dest_y == 0)
+            temp_pieces[m.piece].state = PROMOTED;
 
         // checks is captured piece is of correct color
         if(16 <= captured_coordinate && captured_coordinate < 32 && m.piece >= 16)

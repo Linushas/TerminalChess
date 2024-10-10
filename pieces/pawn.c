@@ -10,11 +10,7 @@ int visible_to_pawn(p pieces[], p pawn, int target_x, int target_y)
     getBoard(pieces, board);
     int dx = pawn.x - target_x;
     
-    for(i = 0; i < NR_OF_PIECES; i++)
-    {
-        if(pieces[i].x == pawn.x && pieces[i].y == pawn.y)
-            break;
-    }
+    i = board[pawn.x][pawn.y];
     if(i < 16)
     {   
         if(pawn.y == 1 && pawn.y + 2 == target_y && dx == 0 && board[target_x][target_y] == EMPTY_COORDINATE)
